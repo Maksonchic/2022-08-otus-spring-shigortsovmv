@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.otus.books.domain.Author;
 
+import java.util.List;
+
 @Repository
 public class AuthorDaoJdbc implements AuthorDao {
 
@@ -22,6 +24,13 @@ public class AuthorDaoJdbc implements AuthorDao {
         return jdbcOperations.queryForObject(
                 "select ID, NICKNAME, LAST_NAME, FIRST_NAME, MIDDLE_NAME from AUTHORS where ID = :ID",
                 new MapSqlParameterSource().addValue("ID", id),
+                new AuthorMapper());
+    }
+
+    @Override
+    public List<Author> getAll() {
+        return jdbcOperations.query("select ID, NICKNAME, LAST_NAME, FIRST_NAME, MIDDLE_NAME from AUTHORS",
+                new MapSqlParameterSource(),
                 new AuthorMapper());
     }
 

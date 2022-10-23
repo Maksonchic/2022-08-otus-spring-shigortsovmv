@@ -8,8 +8,6 @@ import ru.otus.books.dao.GenreDao;
 import ru.otus.books.domain.Author;
 import ru.otus.books.domain.Book;
 
-import java.util.List;
-
 @ShellComponent
 public class ShellController {
 
@@ -23,7 +21,7 @@ public class ShellController {
         this.genreDao = genreDao;
     }
 
-    @ShellMethod(key = "add book")
+    @ShellMethod(key = "add book", group = "books", value = ":title :page_count :nickName_author :genre_name")
     public void addBook(String title, int page_count, String authorNickName, String genre) {
         bookDao.insert(new Book(
                 0,
@@ -33,7 +31,7 @@ public class ShellController {
                 genreDao.getByGenre(genre)));
     }
 
-    @ShellMethod(key = "get books")
+    @ShellMethod(key = "get books", group = "books")
     public String getAllBooks() {
         StringBuilder sb = new StringBuilder();
         sb.append("[\r\n");
@@ -42,23 +40,43 @@ public class ShellController {
         return sb.toString();
     }
 
-    @ShellMethod(key = "b")
+    @ShellMethod(key = "get book -id", group = "books", value = ":id")
     public String getBookById(long id) {
         Book byId = bookDao.getById(id);
         return String.valueOf(byId);
     }
 
-    @ShellMethod(key = "c")
-    public String getByAuthor(long authorId) {
-        Author a = authorDao.getById(authorId);
-        List<Book> q = bookDao.getByAuthor(a);
-        return String.valueOf(q);
+    @ShellMethod(key = "get book -author", group = "books", value = ":authorNickName")
+    public String getBookByAuthor(String authorNickName) {
+        Author a = authorDao.getByNickName(authorNickName);
+        StringBuilder sb = new StringBuilder();
+        sb.append("[\r\n");
+        bookDao.getByAuthor(a).forEach((b) -> sb.append(b.toString()).append("\t\r\n"));
+        sb.append("[");
+        return sb.toString();
     }
 
-    @ShellMethod(key = "d")
-    public String getAuthByNick(String nickName) {
-        Author a = authorDao.getByNickName(nickName);
-        List<Book> q = bookDao.getByAuthor(a);
-        return String.valueOf(q);
+    @ShellMethod(key = "delete book", group = "books", value = ":id")
+    public void removeBookById(long id) {
+        bookDao.remove(bookDao.getById(id));
+    }
+
+    @ShellMethod(key = "get authors", group = "authors")
+    public String getAuthors() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[\r\n");
+        authorDao.getAll().forEach((a) -> sb.append(a.toString()).append("\t\r\n"));
+        sb.append("[");
+        return sb.toString();
+    }
+
+    @ShellMethod(key = "add author", group = "authors", value = ":nickName :last_name :first_name :middle_name")
+    public void addAuthor(String nickName, String lastName, String firstName, String middleName) {
+        authorDao.insert(new Author(0, nickName, lastName, firstName, middleName));
+    }
+
+    @ShellMethod(key = "delete author", group = "authors", value = ":id")
+    public void removeAuthorById(long id) {
+        authorDao.remove(authorDao.getById(id));
     }
 }
