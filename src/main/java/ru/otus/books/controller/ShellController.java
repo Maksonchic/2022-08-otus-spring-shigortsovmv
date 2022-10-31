@@ -29,13 +29,13 @@ public class ShellController {
 
     @ShellMethod(key = "add book", group = "books", value = ":title :page_count :nickName_author :genre_name")
     public void addBook(String title, int page_count, String authorNickName, String genre) {
-//        bookJpa.save(new Book(
-//                0,
-//                title,
-//                page_count,
-//                authorJpa.findByNickName(authorNickName),
-//                genreJpa.findByGenre(genre),
-//                new ArrayList<>()));
+        bookJpa.save(new Book(
+                0,
+                title,
+                page_count,
+                authorJpa.findByNickName(authorNickName),
+                genreJpa.findByGenre(genre),
+                new ArrayList<>()));
     }
 
     @ShellMethod(key = "get books", group = "books")

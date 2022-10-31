@@ -34,15 +34,15 @@ public class Book {
     @Column(name = "page_count", nullable = false)
     private int pageCount;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Author.class, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Author.class, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Genre.class, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Genre.class, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Comment.class, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Comment.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "book_id")
     private List<Comment> comments;
 }

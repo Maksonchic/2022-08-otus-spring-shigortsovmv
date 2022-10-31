@@ -6,7 +6,6 @@ import ru.otus.books.models.Genre;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.List;
 
 @Repository
 public class GenreRepositoryJpa implements GenreRepository {
@@ -32,7 +31,7 @@ public class GenreRepositoryJpa implements GenreRepository {
     }
 
     @Override
-    public void remove(Genre genre) {
-
+    public void remove(final Genre genre) {
+        em.remove(genre);
     }
 }
