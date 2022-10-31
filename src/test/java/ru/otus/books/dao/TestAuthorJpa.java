@@ -1,72 +1,89 @@
 package ru.otus.books.dao;
 
-/*
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import ru.otus.books.domain.Author;
+import org.springframework.test.annotation.DirtiesContext;
+import ru.otus.books.models.Author;
+import ru.otus.books.repositories.AuthorRepositoryJpa;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@JdbcTest
+@DataJpaTest
 @DisplayName("Работаем с авторами")
-@Import({
-		AuthorDaoJdbc.class,
-		BookDaoJdbc.class
-})
-class TestAuthorDao {
+@Import(AuthorRepositoryJpa.class)
+class TestAuthorJpa {
 
 	@Autowired
-	private AuthorDao authorDao;
+	private AuthorRepositoryJpa repo;
+
+	@PersistenceContext
+	private EntityManager tem;
 
 	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 	@DisplayName("Сравниваем различные способы получения первого автора")
 	void compareFirst() {
-		assertEquals(authorDao.getById(1), authorDao.getByNickName("Michael"));
-		assertEquals(authorDao.getByNickName("michael"), authorDao.getByNickName("MichaEL"));
+		repo.save(new Author(0, "Michael", "l", "f", "www"));
+		assertEquals(repo.findById(1), repo.findByNickName("Michael"));
+		assertEquals(repo.findByNickName("michael"), repo.findByNickName("MichaEL"));
 	}
 
 	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 	@DisplayName("Вставка автора")
 	void insertNewOne() {
 		// first check empty result
-		assertThrows(org.springframework.dao.EmptyResultDataAccessException.class, () -> authorDao.getById(3));
-		assertThrows(org.springframework.dao.EmptyResultDataAccessException.class, () -> authorDao.getByNickName("me"));
+		assertNull(repo.findById(1));
+		assertThrows(javax.persistence.NoResultException.class, () -> repo.findByNickName("me"));
 		// add data
-		authorDao.insert(new Author(0, "me", "l", "f", "m"));
+		repo.save(new Author(0, "me", "l", "f", "m"));
 		// check inserted data
-		assertDoesNotThrow(() -> authorDao.getById(3));
-		assertNotNull(authorDao.getByNickName("me"));
-		assertNotNull(authorDao.getById(2));
+		assertNotNull(repo.findById(1));
+		assertDoesNotThrow(() -> repo.findByNickName("me"));
 	}
 
 	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 	@DisplayName("Обновление первого автора")
 	void updateFirst() {
-		Author authorBefore = authorDao.getById(1);
-		Author authorAfter = new Author(
-				authorBefore.id(),
-				authorBefore.nickname(),
-				authorBefore.last_name(),
-				authorBefore.first_name(),
-				authorBefore.middle_name() + "_upd");
-		authorDao.update(authorAfter);
-		authorAfter = authorDao.getById(1);
-		assertNotEquals(authorBefore, authorAfter);
+		repo.save(new Author(0, "Michael", "l", "f", "www"));
+		Author author = repo.findById(1);
+		tem.detach(author);
+		Author updatedAuthor = new Author(
+				author.getId(),
+				author.getNickName(),
+				author.getLastName() + "_upd",
+				author.getFirstName(),
+				author.getMiddleName());
+		repo.save(updatedAuthor);
+		assertNotEquals(author, repo.findById(1));
 	}
 
 	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 	@DisplayName("Удаление первого автора")
 	void deleteFirst() {
-		// remove first
-		final Author author = authorDao.getById(1);
-		assertNotNull(author);
-		authorDao.remove(author);
-		assertThrows(org.springframework.dao.EmptyResultDataAccessException.class, () -> authorDao.getByNickName(author.nickname()));
-		// check second
-		assertNotNull(authorDao.getById(2));
+		repo.save(new Author(0, "Michael", "l", "f", "www"));
+		repo.save(new Author(0, "Michael1", "l", "f", "www"));
+		repo.save(new Author(0, "Michael2", "l", "f", "www"));
+		repo.remove(repo.findById(1));
+		assertNull(repo.findById(1));
+	}
+
+	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+	@DisplayName("Удаление первого автора")
+	void failedInsert() {
+		repo.save(new Author(0, "Michael", "l", "f", "www"));
+		assertThrows(
+				javax.persistence.PersistenceException.class,
+				() -> repo.save(
+						repo.save(new Author(0, "Michael", "l", "f", "www"))));
 	}
 }
-*/

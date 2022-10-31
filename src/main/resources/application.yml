@@ -11,3 +11,11 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
+  jpa:
+    properties:
+      hibernate:
+        # каждая выборка ленивой сущности откроет временный сеанс (для shell)
+        enable_lazy_load_no_trans: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none

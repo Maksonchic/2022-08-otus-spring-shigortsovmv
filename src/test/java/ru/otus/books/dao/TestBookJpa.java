@@ -6,8 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.books.models.Author;
 import ru.otus.books.models.Book;
+import ru.otus.books.models.Comment;
 import ru.otus.books.models.Genre;
 import ru.otus.books.repositories.BookRepositoryJpa;
 
@@ -16,56 +18,53 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ru.otus.books.dao.utils.DataCreator.createDataFirstBook;
 
 @DataJpaTest
 @DisplayName("Работаем с книгами")
 @Import(BookRepositoryJpa.class)
-class TestBookDao {
+class TestBookJpa {
 
 	@Autowired
-	private BookRepositoryJpa bookJpa;
+	private BookRepositoryJpa repo;
 
 	@Test
-	@DisplayName("Тест селекта второй книги")
-	void compareFirst() {
-		Book bNew1 = createDataFirstBook();
-		val ref = new Object() { Book bDb1; };
-		assertDoesNotThrow(() -> ref.bDb1 = bookJpa.findById(2).orElseThrow());
-		assertEquals(bNew1, ref.bDb1);
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+	@DisplayName("Вставляем книгу с комментами")
+	void insertNewBook() {
+		assertThrows(NoSuchElementException.class, () -> repo.findById(1).orElseThrow());
+		Book bNew3 = createDataFirstBook();
+		bNew3.getComments().add(new Comment(0, "a"));
+		bNew3.getComments().add(new Comment(0, "b"));
+		bNew3.getComments().add(new Comment(0, "d"));
+		repo.save(bNew3);
+		System.out.println(repo.findById(1));
 	}
 
 	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 	@DisplayName("Изменение книги")
 	void updateBook() {
-		String newTitle = "new title";
 		Book bNew = createDataFirstBook();
+		String newTitle = "new title + " + bNew.getTitle();
+		repo.save(bNew);
+		assertInstanceOf(Book.class, repo.findById(bNew.getId()).orElseThrow());
 		bNew.setTitle(newTitle);
-		Book savedBook = bookJpa.save(bNew);
+		Book savedBook = repo.save(bNew);
 		assertEquals(newTitle, savedBook.getTitle());
-		assertEquals(newTitle, bookJpa.findById(1).orElseThrow().getTitle());
+		assertEquals(newTitle, repo.findById(1).orElseThrow().getTitle());
 	}
 
 	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 	@DisplayName("Удаление книги")
 	void removeBook() {
-		Book b = bookJpa.findById(1).orElseThrow();
-		bookJpa.remove(b);
-		assertThrows(NoSuchElementException.class, () -> bookJpa.findById(1).orElseThrow());
-	}
-
-	private Book createDataFirstBook() {
-		Author aNew = createDataFirstAuthor();
-		Genre gNew = createDataFirstGenre();
-		return new Book(1, "About us", 322, aNew, gNew, new ArrayList<>());
-	}
-
-	private Author createDataFirstAuthor() {
-		return new Author(
-				1, "Michael", "Last", "Firstov", "Middleich");
-	}
-
-	private Genre createDataFirstGenre() {
-		return new Genre(1, "Horror");
+		Book bNew = createDataFirstBook();
+		repo.save(bNew);
+		assertInstanceOf(Book.class, repo.findById(bNew.getId()).orElseThrow());
+		repo.remove(repo.findById(1).orElseThrow());
+		assertThrows(NoSuchElementException.class, () -> repo.findById(1).orElseThrow());
 	}
 }
