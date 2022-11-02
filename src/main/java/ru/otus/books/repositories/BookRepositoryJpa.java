@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.models.Author;
 import ru.otus.books.models.Book;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -31,7 +32,10 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     @Transactional(readOnly = true)
     public List<Book> findAll() {
-        return em.createQuery("select b from Book b", Book.class).getResultList();
+        EntityGraph<?> entityGraph = em.getEntityGraph("books-entity-graph");
+        TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
+        query.setHint("javax.persistence.fetchgraph", entityGraph);
+        return query.getResultList();
     }
 
     @Override
@@ -51,6 +55,8 @@ public class BookRepositoryJpa implements BookRepository {
         TypedQuery<Book> query
                 = em.createQuery("select b from Book b, Author a where b.author = a and a = :AUTHOR", Book.class);
         query.setParameter("AUTHOR", author);
+        EntityGraph<?> entityGraph = em.getEntityGraph("books-entity-graph");
+        query.setHint("javax.persistence.fetchgraph", entityGraph);
         return query.getResultList();
     }
 }
