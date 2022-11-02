@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -78,5 +79,32 @@ class TestBookRepositoryJpa {
 		assertNull(em.find(Comment.class, 1L));
 		assertNotNull(em.find(Author.class, 1L));
 		assertNotNull(em.find(Genre.class, 1L));
+	}
+
+	@Test
+	@DisplayName("Добавление комментария к первой книге")
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+	public void addCommentToFirstBook() {
+		Book book = em.find(Book.class, 1L);
+		List<Comment> comms = new ArrayList<>(){{
+			add(new Comment(2, "first comment"));
+			add(new Comment(3, "second comment"));
+			add(new Comment(4, "third comment"));
+		}};
+		book.getComments().addAll(comms);
+		repo.save(book);
+		assertEquals(comms, em.find(Book.class, 1L).getComments());
+	}
+
+	@Test
+	@DisplayName("Поиск по автору")
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+	public void findByAuthor() {
+		Author a = em.find(Author.class, 1L);
+		ArrayList<Book> books = new ArrayList<>() {{
+			add(em.find(Book.class, 1L));
+			add(em.find(Book.class, 2L));
+		}};
+		assertEquals(books, repo.findByAuthor(a));
 	}
 }

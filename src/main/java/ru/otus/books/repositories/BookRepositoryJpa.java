@@ -1,12 +1,13 @@
 package ru.otus.books.repositories;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.books.models.Author;
 import ru.otus.books.models.Book;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,18 +17,9 @@ public class BookRepositoryJpa implements BookRepository {
     @PersistenceContext
     private EntityManager em;
 
-//    @Autowired
-//    private AuthorRepositoryJpa authorJpa;
-//
-//    @Autowired
-//    private GenreRepositoryJpa genreJpa;
-//
-//    @Autowired
-//    private CommentRepositoryJpa commentJpa;
-
     @Override
+    @Transactional
     public Book save(final Book book) {
-//        saveRefers(book);
         if (book.getId() <= 0) {
             em.persist(book);
             return book;
@@ -36,26 +28,29 @@ public class BookRepositoryJpa implements BookRepository {
         }
     }
 
-    private void saveRefers(final Book book) {
-//        authorJpa.save(book.getAuthor());
-//        genreJpa.save(book.getGenre());
-//        book.getComments().forEach(c -> commentJpa.save(c));
-    }
-
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Book> findAll() {
         return em.createQuery("select b from Book b", Book.class).getResultList();
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<Book> findById(long bookId) {
         return Optional.ofNullable(em.find(Book.class, bookId));
     }
 
     @Override
-    public void remove(Book book) {
-        em.remove(book);
+    @Transactional
+    public void remove(final Book book) {
+        em.remove(em.contains(book) ? book : em.merge(book));
+    }
+
+    @Override
+    public List<Book> findByAuthor(final Author author) {
+        TypedQuery<Book> query
+                = em.createQuery("select b from Book b, Author a where b.author = a and a = :AUTHOR", Book.class);
+        query.setParameter("AUTHOR", author);
+        return query.getResultList();
     }
 }

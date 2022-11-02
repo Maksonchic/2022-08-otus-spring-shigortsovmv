@@ -1,5 +1,6 @@
 package ru.otus.books.repositories;
 
+import ru.otus.books.models.Author;
 import ru.otus.books.models.Book;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface BookRepository {
     List<Book> findAll();
     Optional<Book> findById(final long bookId);
     void remove(final Book book);
+    List<Book> findByAuthor(final Author author);
 }
