@@ -14,9 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
-@Table(name = "COMMENTS")
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "COMMENTS")
 @Entity
 public class Comment {
     @Id
