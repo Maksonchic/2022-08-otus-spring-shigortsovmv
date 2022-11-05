@@ -25,7 +25,6 @@ public class CommentRepositoryJpa implements CommentRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Comment findById(long id) {
         return em.find(Comment.class, id);
     }

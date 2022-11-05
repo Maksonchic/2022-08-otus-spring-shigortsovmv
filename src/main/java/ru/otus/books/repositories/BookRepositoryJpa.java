@@ -26,7 +26,6 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Book> findById(long bookId) {
         return Optional.ofNullable(em.find(Book.class, bookId));
     }
