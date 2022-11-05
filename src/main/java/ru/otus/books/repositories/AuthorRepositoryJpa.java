@@ -1,28 +1,27 @@
 package ru.otus.books.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.models.Author;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
-@Repository
+@Service
 public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Autowired
     private EntityManager em;
 
     @Override
-    @Transactional(readOnly = true)
-    public Author findById(long id) {
-        return em.find(Author.class, id);
+    public Optional<Author> findById(long id) {
+        return Optional.ofNullable(em.find(Author.class, id));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Author> findAll() {
         return em.createQuery("select a from Author a", Author.class).getResultList();
     }
@@ -39,7 +38,6 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Author findByNickName(final String nickName) {
         TypedQuery<Author> query
                 = em.createQuery("select a from Author a where UPPER(a.nickName) = :NICKNAME", Author.class);

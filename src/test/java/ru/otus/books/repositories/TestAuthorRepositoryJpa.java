@@ -47,7 +47,7 @@ class TestAuthorRepositoryJpa {
 	@DisplayName("Обновление первого автора")
 	void updateFirst() {
 		repo.save(new Author(0, "Michael", "l", "f", "www"));
-		Author author = repo.findById(1);
+		Author author = repo.findById(1).orElseThrow();
 		em.detach(author);
 		Author updatedAuthor = new Author(
 				author.getId(),

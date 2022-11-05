@@ -6,13 +6,13 @@ import org.springframework.shell.standard.ShellMethod;
 import ru.otus.books.models.Author;
 import ru.otus.books.models.Book;
 import ru.otus.books.models.Comment;
+import ru.otus.books.models.Genre;
 import ru.otus.books.repositories.AuthorRepositoryJpa;
 import ru.otus.books.repositories.BookRepositoryJpa;
 import ru.otus.books.repositories.CommentRepositoryJpa;
 import ru.otus.books.repositories.GenreRepositoryJpa;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @ShellComponent
 public class ShellController {
@@ -29,6 +29,23 @@ public class ShellController {
     @Autowired
     CommentRepositoryJpa commentJpa;
 
+    // get book -id 1
+    @ShellMethod(key = "get book -id", group = "books", value = ":id")
+    public String getBookById(long id) {
+        return bookJpa.findById(id).orElseThrow().toString();
+    }
+
+    // get book -author MichAEL
+    @ShellMethod(key = "get book -author", group = "books", value = ":authorNickName")
+    public String getBookByAuthor(String authorNickName) {
+        Author a = authorJpa.findByNickName(authorNickName);
+        StringBuilder sb = new StringBuilder();
+        sb.append("[\r\n");
+        a.getBooks().forEach((b) -> sb.append(b).append("\t\r\n"));
+        sb.append("[");
+        return sb.toString();
+    }
+
     // add author me l f m
     // add book qweeee 323 me Horror
     // get book -author me
@@ -42,33 +59,6 @@ public class ShellController {
                 authorJpa.findByNickName(authorNickName),
                 genreJpa.findByGenre(genre),
                 new ArrayList<>()));
-    }
-
-    @ShellMethod(key = "get books", group = "books")
-    public String getAllBooks() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[\r\n");
-        List<Book> all = bookJpa.findAll();
-        all.forEach((b) -> sb.append(b.toString()).append("\t\r\n"));
-        sb.append("[");
-        return sb.toString();
-    }
-
-    @ShellMethod(key = "get book -id", group = "books", value = ":id")
-    public String getBookById(long id) {
-        Book byId = bookJpa.findById(id).orElseThrow();
-        return String.valueOf(byId);
-    }
-
-    // get book -author MichAEL
-    @ShellMethod(key = "get book -author", group = "books", value = ":authorNickName")
-    public String getBookByAuthor(String authorNickName) {
-        Author a = authorJpa.findByNickName(authorNickName);
-        StringBuilder sb = new StringBuilder();
-        sb.append("[\r\n");
-        bookJpa.findByAuthor(a).forEach((b) -> sb.append(b.toString()).append("\t\r\n"));
-        sb.append("[");
-        return sb.toString();
     }
 
     @ShellMethod(key = "delete book", group = "books", value = ":id")
@@ -121,6 +111,25 @@ public class ShellController {
 
     @ShellMethod(key = "delete comment", group = "comments", value = ":id")
     public void removeComment(long commentId) {
-        commentJpa.remove(commentJpa.findById(commentId));
+        commentJpa.removeById(commentId);
+    }
+
+    @ShellMethod(key = "get genres", group = "genres")
+    public String getGenres() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[\r\n");
+        genreJpa.findAll().forEach((a) -> sb.append(a.toString()).append("\t\r\n"));
+        sb.append("[");
+        return sb.toString();
+    }
+
+    @ShellMethod(key = "add genre", group = "genres", value = ":id :name")
+    public void addGenre(int genreId, String name) {
+        genreJpa.save(new Genre(genreId, name));
+    }
+
+    @ShellMethod(key = "delete genre", group = "genres", value = ":id")
+    public void removeGenreById(int id) {
+        genreJpa.remove(genreJpa.findById(id));
     }
 }
