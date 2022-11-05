@@ -12,9 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Data
-@Table(name = "GENRES")
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "GENRES")
 @Entity
 public class Genre {
     @Id
