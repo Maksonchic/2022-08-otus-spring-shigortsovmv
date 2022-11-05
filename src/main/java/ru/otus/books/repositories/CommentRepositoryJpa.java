@@ -1,7 +1,6 @@
 package ru.otus.books.repositories;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.models.Comment;
 
 import javax.persistence.EntityManager;
@@ -14,7 +13,6 @@ public class CommentRepositoryJpa implements CommentRepository {
     private EntityManager em;
 
     @Override
-    @Transactional
     public Comment save(Comment comment) {
         if (comment.getId() <= 0) {
             em.persist(comment);
@@ -30,13 +28,11 @@ public class CommentRepositoryJpa implements CommentRepository {
     }
 
     @Override
-    @Transactional
     public void remove(Comment comment) {
         em.remove(em.contains(comment) ? comment : em.merge(comment));
     }
 
     @Override
-    @Transactional
     public void removeById(long id) {
         Comment comment = em.find(Comment.class, id);
         em.remove(em.contains(comment) ? comment : em.merge(comment));

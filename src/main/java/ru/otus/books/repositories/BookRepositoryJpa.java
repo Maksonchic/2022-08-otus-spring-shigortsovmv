@@ -1,7 +1,6 @@
 package ru.otus.books.repositories;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.models.Book;
 
 import javax.persistence.EntityManager;
@@ -15,7 +14,6 @@ public class BookRepositoryJpa implements BookRepository {
     private EntityManager em;
 
     @Override
-    @Transactional
     public Book save(final Book book) {
         if (book.getId() <= 0) {
             em.persist(book);
@@ -31,7 +29,6 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    @Transactional
     public void remove(final Book book) {
         em.remove(em.contains(book) ? book : em.merge(book));
     }

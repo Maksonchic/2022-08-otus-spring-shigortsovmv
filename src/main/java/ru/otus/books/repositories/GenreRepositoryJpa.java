@@ -1,7 +1,6 @@
 package ru.otus.books.repositories;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.models.Genre;
 
 import javax.persistence.EntityManager;
@@ -16,7 +15,6 @@ public class GenreRepositoryJpa implements GenreRepository {
     private EntityManager em;
 
     @Override
-    @Transactional
     public Genre save(Genre genre) {
         if (genre.getId() <= 0) {
             em.persist(genre);
@@ -44,7 +42,6 @@ public class GenreRepositoryJpa implements GenreRepository {
     }
 
     @Override
-    @Transactional
     public void remove(final Genre genre) {
         em.remove(em.contains(genre) ? genre : em.merge(genre));
     }

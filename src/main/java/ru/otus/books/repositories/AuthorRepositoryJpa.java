@@ -2,7 +2,6 @@ package ru.otus.books.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.models.Author;
 
 import javax.persistence.EntityManager;
@@ -27,7 +26,6 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     @Override
-    @Transactional
     public Author save(Author author) {
         if (author.getId() <= 0) {
             em.persist(author);
@@ -46,7 +44,6 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     @Override
-    @Transactional
     public void remove(Author author) {
         em.remove(em.contains(author) ? author : em.merge(author));
     }

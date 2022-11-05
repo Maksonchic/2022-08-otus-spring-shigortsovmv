@@ -19,5 +19,5 @@ spring:
     properties:
       hibernate:
         # каждая выборка ленивой сущности откроет временный сеанс (для shell)
-        enable_lazy_load_no_trans: true
+#        enable_lazy_load_no_trans: true
 
