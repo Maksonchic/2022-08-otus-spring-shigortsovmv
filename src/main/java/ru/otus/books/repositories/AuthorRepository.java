@@ -10,5 +10,5 @@ public interface AuthorRepository {
     List<Author> findAll();
     Author save(final Author author);
     Author findByNickName(final String nickName);
-    void remove(final Author author);
+    void remove(final Author authorDto);
 }

@@ -1,6 +1,9 @@
 package ru.otus.books.models;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +16,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "AUTHORS")
 @Entity
 public class Author {
@@ -35,6 +39,7 @@ public class Author {
     private String middleName;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    @Fetch(FetchMode.SUBSELECT)
     private List<Book> books;
 
     public Author(long id, String nickName, String lastName, String firstName, String middleName) {

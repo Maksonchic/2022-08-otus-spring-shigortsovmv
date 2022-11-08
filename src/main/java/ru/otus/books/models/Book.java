@@ -2,6 +2,8 @@ package ru.otus.books.models;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -41,6 +43,7 @@ public class Book {
 
     @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "book_id")
+    @Fetch(FetchMode.SUBSELECT)
     private List<Comment> comments;
 
     public long getId() {
