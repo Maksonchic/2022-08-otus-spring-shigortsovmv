@@ -94,7 +94,7 @@ public class ShellController {
     @ShellMethod(key = "get comments", group = "comments", value = ":bookId")
     public String getBookComments(long bookId) {
         return "[\r\n" +
-                bookService.getById(bookId).getComments().stream()
+                bookService.getBookComments(bookId).stream()
                         .map(c -> c.toString())
                         .collect(Collectors.joining(",")) +
                 "\r\n]";

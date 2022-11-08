@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.dto.AuthorDto;
 import ru.otus.books.dto.BookDto;
+import ru.otus.books.dto.CommentDto;
 import ru.otus.books.dto.GenreDto;
 import ru.otus.books.models.Book;
 import ru.otus.books.models.Comment;
@@ -13,6 +14,7 @@ import ru.otus.books.repositories.BookRepositoryJpa;
 import ru.otus.books.repositories.GenreRepositoryJpa;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BookDtoServiceImpl implements BookDtoService {
@@ -57,5 +59,10 @@ public class BookDtoServiceImpl implements BookDtoService {
         Book book = repo.findById(bookId).orElseThrow();
         book.getComments().add(new Comment(0, commentText));
         repo.save(book);
+    }
+
+    @Override
+    public List<CommentDto> getBookComments(long bookId) {
+        return BookDto.createDto(repo.findById(bookId).orElseThrow(), false).getComments();
     }
 }
