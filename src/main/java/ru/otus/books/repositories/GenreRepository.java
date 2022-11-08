@@ -3,7 +3,6 @@ package ru.otus.books.repositories;
 import ru.otus.books.models.Genre;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface GenreRepository {
     Genre save(final Genre genre);

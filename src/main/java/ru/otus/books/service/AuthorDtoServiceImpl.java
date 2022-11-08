@@ -17,11 +17,6 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     AuthorRepositoryJpa repo;
 
     @Override
-    public AuthorDto getById(long id) {
-        return null;
-    }
-
-    @Override
     public AuthorDto getByNickName(String nickName) {
         return AuthorDto.createDto(repo.findByNickName(nickName));
     }
@@ -30,16 +25,6 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     @Transactional(readOnly = true)
     public List<AuthorDto> getAllAuthors() {
         return repo.findAll().stream().map(AuthorDto::createDto).toList();
-    }
-
-    @Override
-    public AuthorDto save(AuthorDto authorDto) {
-        return null;
-    }
-
-    @Override
-    public List<BookDto> findBooks(String nickName) {
-        return null;
     }
 
     @Override

@@ -79,6 +79,21 @@ public class AuthorDto {
     }
 
     @Override
+    public int hashCode() {
+        return (int) id
+                + nickName.hashCode()
+                + firstName.hashCode()
+                + lastName.hashCode()
+                + middleName.hashCode()
+                + books.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.hashCode() == obj.hashCode();
+    }
+
+    @Override
     public String toString() {
         return "{" +
                 "\"id\":" + id +
