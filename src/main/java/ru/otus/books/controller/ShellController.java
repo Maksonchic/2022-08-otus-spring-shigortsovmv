@@ -3,9 +3,6 @@ package ru.otus.books.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.books.dto.AuthorDto;
-import ru.otus.books.dto.BookDto;
-import ru.otus.books.dto.CommentDto;
 import ru.otus.books.service.AuthorDtoService;
 import ru.otus.books.service.BookDtoService;
 import ru.otus.books.service.CommentDtoService;
@@ -42,7 +39,7 @@ public class ShellController {
                 authorService
                         .getAuthorBooks(authorNickName)
                         .stream()
-                        .map(BookDto::toString)
+                        .map(a -> a.toString())
                         .collect(Collectors.joining(",")) +
                 "\r\n]";
     }
@@ -68,7 +65,7 @@ public class ShellController {
         StringBuilder sb = new StringBuilder();
         sb.append("[\r\n");
         sb.append(authorService.getAllAuthors().stream()
-                .map(AuthorDto::toString)
+                .map(a -> a.toString())
                 .collect(Collectors.joining(",")));
         sb.append("]");
 
@@ -98,7 +95,7 @@ public class ShellController {
     public String getBookComments(long bookId) {
         return "[\r\n" +
                 bookService.getById(bookId).getComments().stream()
-                        .map(CommentDto::toString)
+                        .map(c -> c.toString())
                         .collect(Collectors.joining(",")) +
                 "\r\n]";
     }
