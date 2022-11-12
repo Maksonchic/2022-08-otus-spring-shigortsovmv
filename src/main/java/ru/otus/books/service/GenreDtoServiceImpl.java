@@ -28,11 +28,11 @@ public class GenreDtoServiceImpl implements GenreDtoService {
     @Override
     @Transactional
     public void removeGenre(String genre) {
-        repo.remove(repo.findByGenre(genre));
+        repo.deleteByGenreIgnoreCase(genre);
     }
 
     @Override
     public GenreDto getByGenre(String genre) {
-        return GenreDto.createDto(repo.findByGenre(genre));
+        return GenreDto.createDto(repo.findByGenreIgnoreCase(genre));
     }
 }

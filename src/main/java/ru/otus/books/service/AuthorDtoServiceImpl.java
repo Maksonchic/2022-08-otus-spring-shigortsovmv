@@ -6,19 +6,20 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.dto.AuthorDto;
 import ru.otus.books.dto.BookDto;
 import ru.otus.books.models.Author;
-import ru.otus.books.repositories.AuthorRepositoryJpa;
+import ru.otus.books.repositories.AuthorRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AuthorDtoServiceImpl implements AuthorDtoService {
 
     @Autowired
-    AuthorRepositoryJpa repo;
+    private AuthorRepository repo;
 
     @Override
     public AuthorDto getByNickName(String nickName) {
-        return AuthorDto.createDto(repo.findByNickName(nickName));
+        return AuthorDto.createDto(repo.findByNickNameIgnoreCase(nickName));
     }
 
     @Override
@@ -30,9 +31,8 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     @Override
     @Transactional(readOnly = true)
     public List<BookDto> getAuthorBooks(String authorNickName) {
-        Author author = repo.findByNickName(authorNickName);
-        AuthorDto authorDto = AuthorDto.createDto(author, true);
-        return authorDto.getBooks();
+        Author author = repo.findByNickNameIgnoreCase(authorNickName);
+        return author.getBooks().stream().map(BookDto::createDto).toList();
     }
 
     @Override
@@ -44,6 +44,6 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     @Override
     @Transactional
     public void removeByNickName(String nickName) {
-        repo.remove(repo.findByNickName(nickName));
+        repo.delete(repo.findByNickNameIgnoreCase(nickName));
     }
 }

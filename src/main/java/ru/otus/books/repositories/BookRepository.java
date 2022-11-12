@@ -1,11 +1,9 @@
 package ru.otus.books.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.books.models.Book;
 
-import java.util.Optional;
-
-public interface BookRepository {
+public interface BookRepository extends JpaRepository<Book, Long> {
     Book save(final Book book);
-    Optional<Book> findById(final long bookId);
-    void remove(final Book book);
+    Book findById(final long bookId);
 }

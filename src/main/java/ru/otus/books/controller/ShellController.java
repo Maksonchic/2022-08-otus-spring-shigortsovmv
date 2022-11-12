@@ -62,14 +62,11 @@ public class ShellController {
 
     @ShellMethod(key = "get authors", group = "authors")
     public String getAuthors() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[\r\n");
-        sb.append(authorService.getAllAuthors().stream()
-                .map(a -> a.toString())
-                .collect(Collectors.joining(",")));
-        sb.append("]");
-
-        return sb.toString();
+        return "[\r\n" +
+                authorService.getAllAuthors().stream()
+                        .map(a -> a.toString())
+                        .collect(Collectors.joining(",")) +
+                "]";
     }
 
     // add author me l f m
@@ -119,7 +116,7 @@ public class ShellController {
         return sb.toString();
     }
 
-    @ShellMethod(key = "add genre", group = "genres", value = ":id :name")
+    @ShellMethod(key = "add genre", group = "genres", value = ":genre")
     public void addGenre(String name) {
         genreService.add(name);
     }
