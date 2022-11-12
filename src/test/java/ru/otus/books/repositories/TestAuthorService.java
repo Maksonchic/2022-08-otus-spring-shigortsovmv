@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @DisplayName("Работаем с авторами")
-@Import({AuthorDtoServiceImpl.class,AuthorRepositoryJpa.class})
+@Import(AuthorDtoServiceImpl.class)
 class TestAuthorService {
 
 	@Autowired
-	private AuthorDtoServiceImpl authorDtoService;
+	private AuthorDtoService authorDtoService;
 
 	@PersistenceContext
 	private EntityManager em;

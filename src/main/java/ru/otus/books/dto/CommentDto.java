@@ -1,7 +1,9 @@
 package ru.otus.books.dto;
 
+import lombok.EqualsAndHashCode;
 import ru.otus.books.models.Comment;
 
+@EqualsAndHashCode
 public class CommentDto {
     private final long id;
     private final String message;

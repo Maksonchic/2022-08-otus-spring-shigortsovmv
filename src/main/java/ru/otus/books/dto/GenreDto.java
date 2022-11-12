@@ -1,7 +1,9 @@
 package ru.otus.books.dto;
 
+import lombok.EqualsAndHashCode;
 import ru.otus.books.models.Genre;
 
+@EqualsAndHashCode
 public class GenreDto {
     private final long id;
     private final String genre;

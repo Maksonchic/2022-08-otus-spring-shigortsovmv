@@ -8,7 +8,6 @@ import ru.otus.books.dto.BookDto;
 import ru.otus.books.models.Author;
 import ru.otus.books.repositories.AuthorRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

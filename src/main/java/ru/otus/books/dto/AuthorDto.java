@@ -1,10 +1,12 @@
 package ru.otus.books.dto;
 
+import lombok.EqualsAndHashCode;
 import ru.otus.books.models.Author;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode
 public class AuthorDto {
 
     private final long id;
