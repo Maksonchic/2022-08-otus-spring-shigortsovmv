@@ -17,11 +17,6 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     private AuthorRepository repo;
 
     @Override
-    public AuthorDto getByNickName(String nickName) {
-        return AuthorDto.createDto(repo.findByNickNameIgnoreCase(nickName));
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<AuthorDto> getAllAuthors() {
         return repo.findAll().stream().map(AuthorDto::createDto).toList();
