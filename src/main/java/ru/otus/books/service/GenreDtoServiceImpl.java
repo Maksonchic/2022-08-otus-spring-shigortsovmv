@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.dto.GenreDto;
 import ru.otus.books.repositories.GenreRepository;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 @Service
@@ -20,7 +21,6 @@ public class GenreDtoServiceImpl implements GenreDtoService {
     }
 
     @Override
-    @Transactional
     public void add(String name) {
         repo.save(GenreDto.createEntity(new GenreDto(0, name)));
     }

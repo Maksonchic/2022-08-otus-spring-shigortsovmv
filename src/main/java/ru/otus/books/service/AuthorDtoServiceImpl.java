@@ -17,7 +17,6 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     private AuthorRepository repo;
 
     @Override
-    @Transactional(readOnly = true)
     public List<AuthorDto> getAllAuthors() {
         return repo.findAll().stream().map(AuthorDto::createDto).toList();
     }
@@ -30,7 +29,6 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     }
 
     @Override
-    @Transactional
     public void add(String nickName, String lastName, String firstName, String middleName) {
         repo.save(new Author(0, nickName, lastName, firstName, middleName));
     }

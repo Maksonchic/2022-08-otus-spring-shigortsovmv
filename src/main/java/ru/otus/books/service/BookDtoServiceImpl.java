@@ -35,7 +35,6 @@ public class BookDtoServiceImpl implements BookDtoService {
     }
 
     @Override
-    @Transactional
     public BookDto add(String title, int page_count, String authorNickName, String genre) {
         BookDto bookDto = new BookDto(
                 0,
@@ -48,7 +47,6 @@ public class BookDtoServiceImpl implements BookDtoService {
     }
 
     @Override
-    @Transactional
     public void removeBookById(long id) {
         repo.delete(repo.findById(id));
     }
