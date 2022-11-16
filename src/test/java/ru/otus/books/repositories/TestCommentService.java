@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.books.dto.GenreDto;
-import ru.otus.books.models.Genre;
-import ru.otus.books.service.GenreDtoService;
-import ru.otus.books.service.GenreDtoServiceImpl;
+import ru.otus.books.dto.CommentDto;
+import ru.otus.books.models.Book;
+import ru.otus.books.models.Comment;
+import ru.otus.books.service.CommentDtoService;
+import ru.otus.books.service.CommentDtoServiceImpl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,12 +18,12 @@ import javax.persistence.PersistenceContext;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@Import(GenreDtoServiceImpl.class)
-@DisplayName("Работаем с жанрами")
-class TestGenreService {
+@Import(CommentDtoServiceImpl.class)
+@DisplayName("Работаем с комментами")
+class TestCommentService {
 
 	@Autowired
-	private GenreDtoService genreDtoService;
+	private CommentDtoService commentDtoService;
 
 	@PersistenceContext
 	private EntityManager em;
@@ -31,9 +32,9 @@ class TestGenreService {
 	@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 	@DisplayName("Тест конвертации в ДТО")
 	void testConvertEntityDto() {
-		Genre genre = em.find(Genre.class, 1L);
-		GenreDto genreDto = genreDtoService.getByGenre("horror");
-		assertEquals(genre.getId(), genreDto.getId());
-		assertEquals(genre.getGenre(), genreDto.getGenre());
+		Book book = em.find(Book.class, 2L);
+		Comment first = book.getComments().get(0);
+		CommentDto commentDto = new CommentDto(1L, "So bad, I should have bought a winrar");
+		assertEquals(commentDto, CommentDto.createDto(first));
 	}
 }

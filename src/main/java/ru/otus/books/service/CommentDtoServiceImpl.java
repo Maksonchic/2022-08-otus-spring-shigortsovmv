@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.models.Comment;
-import ru.otus.books.repositories.CommentRepositoryJpa;
+import ru.otus.books.repositories.CommentRepository;
 
 @Service
 public class CommentDtoServiceImpl implements CommentDtoService {
 
     @Autowired
-    CommentRepositoryJpa repo;
+    CommentRepository repo;
 
     @Override
     @Transactional
@@ -23,6 +23,6 @@ public class CommentDtoServiceImpl implements CommentDtoService {
     @Override
     @Transactional
     public void removeComment(long commentId) {
-        repo.remove(repo.findById(commentId));
+        repo.deleteById(commentId);
     }
 }
