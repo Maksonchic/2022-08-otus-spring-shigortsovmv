@@ -6,18 +6,12 @@ spring:
       mode: always
       data-locations: data.sql
       schema-locations: schema.sql
-  h2:
-    console:
-      path: /h2-console
-      settings:
-        web-allow-others: true
-  jpa:
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    properties:
-      hibernate:
-        # каждая выборка ленивой сущности откроет временный сеанс (для shell)
-#        enable_lazy_load_no_trans: true
+  data:
+    mongodb:
+      authentication-database: admin
+#      username: root
+#      password: root
+      database: test
+      port: 27017
+      host: 176.57.220.30
 

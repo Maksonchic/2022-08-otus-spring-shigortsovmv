@@ -2,23 +2,14 @@ package ru.otus.books.models;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "AUTHORS")
-@Entity
+@Document(collection = "AUTHORS")
 public class Author {
 
     @Id
