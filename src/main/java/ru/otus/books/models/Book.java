@@ -2,49 +2,27 @@ package ru.otus.books.models;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "BOOKS")
-@Entity
+@Document(collection = "BOOKS")
 public class Book {
+
+    @Transient
+    public static final String SEQUENCE_NAME = "books_sequence";
+
     @Id
-    @Column(name = "book_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "title", nullable = false)
     private String title;
-
-    @Column(name = "page_count", nullable = false)
     private int pageCount;
-
-    @ManyToOne(targetEntity = Author.class, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "author_id")
     private Author author;
-
-    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "genre_id")
     private Genre genre;
-
-    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "book_id")
-    @Fetch(FetchMode.SUBSELECT)
-    private List<Comment> comments;
+    private List<Long> comments;
 
     public long getId() {
         return id;
@@ -86,11 +64,11 @@ public class Book {
         this.genre = genre;
     }
 
-    public List<Comment> getComments() {
+    public List<Long> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<Long> comments) {
         this.comments = comments;
     }
 
@@ -100,7 +78,7 @@ public class Book {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", pageCount=" + pageCount +
-                ", author=" + author.getNickName() +
+                ", author=" + (author == null ? "" : author.getNickName()) +
                 ", genre=" + genre.getGenre() +
                 ", comments=" + comments +
                 '}';

@@ -3,8 +3,10 @@ package ru.otus.books.models;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -12,25 +14,15 @@ import java.util.List;
 @Document(collection = "AUTHORS")
 public class Author {
 
+    @Transient
+    public static final String SEQUENCE_NAME = "authors_sequence";
+
     @Id
-    @Column(name = "author_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "nickname", unique = true)
     private String nickName;
-
-    @Column(name = "last_name")
     private String lastName;
-
-    @Column(name = "first_name")
     private String firstName;
-
-    @Column(name = "middle_name")
     private String middleName;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
-    @Fetch(FetchMode.SUBSELECT)
     private List<Book> books;
 
     public Author(long id, String nickName, String lastName, String firstName, String middleName) {
@@ -39,6 +31,7 @@ public class Author {
         this.lastName = lastName;
         this.firstName = firstName;
         this.middleName = middleName;
+        this.books = new ArrayList<>();
     }
 
     public long getId() {
@@ -97,7 +90,7 @@ public class Author {
                 ", lastName='" + lastName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
-                ", books=" + books.stream().map(Book::toString).toList() +
+                ", books=" + (books == null ? "[]" : books.stream().map(Book::toString).toList()) +
                 '}';
     }
 }

@@ -3,6 +3,8 @@ package ru.otus.books.dto;
 import lombok.EqualsAndHashCode;
 import ru.otus.books.models.Comment;
 
+import java.util.List;
+
 @EqualsAndHashCode
 public class CommentDto {
     private final long id;
@@ -20,6 +22,13 @@ public class CommentDto {
 
     public static CommentDto createDto(Comment comment) {
         return new CommentDto(comment);
+    }
+
+    public static List<CommentDto> createDto(List<Comment> comments) {
+        return comments
+                .stream()
+                .map(CommentDto::createDto)
+                .toList();
     }
 
     public static Comment createEntity(CommentDto commentDto) {

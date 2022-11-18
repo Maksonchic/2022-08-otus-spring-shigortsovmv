@@ -1,16 +1,9 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-  sql:
-    init:
-      mode: always
-      data-locations: data.sql
-      schema-locations: schema.sql
   data:
     mongodb:
       authentication-database: admin
-#      username: root
-#      password: root
+#      username: myUserAdmin
+#      password: abc123
       database: test
       port: 27017
       host: 176.57.220.30

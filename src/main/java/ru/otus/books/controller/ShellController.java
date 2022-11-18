@@ -45,10 +45,12 @@ public class ShellController {
     }
 
     // add author me l f m
-    // add book qweeee 323 Michael Horror
     // add book qweeee 323 me Horror
-    // get book -author Michael
+    // add comment 2 "asdasd as dasd asss"
+    // get book -author me
+    // delete book 1
     // add book qweeee 323 Michael Horror
+    // add genre Horror
     @ShellMethod(key = "add book", group = "books", value = ":title :page_count :nickName_author :genre_name")
     public void addBook(String title, int page_count, String authorNickName, String genre) {
         bookService.add(title, page_count, authorNickName, genre);
@@ -64,7 +66,7 @@ public class ShellController {
     public String getAuthors() {
         return "[\r\n" +
                 authorService.getAllAuthors().stream()
-                        .map(a -> a.toString())
+                        .map(a -> a.toString()+"\r\n")
                         .collect(Collectors.joining(",")) +
                 "]";
     }
@@ -119,10 +121,5 @@ public class ShellController {
     @ShellMethod(key = "add genre", group = "genres", value = ":genre")
     public void addGenre(String name) {
         genreService.add(name);
-    }
-
-    @ShellMethod(key = "delete genre", group = "genres", value = ":genre")
-    public void removeGenreById(String genre) {
-        genreService.removeGenre(genre);
     }
 }
