@@ -24,9 +24,4 @@ public class GenreDtoServiceImpl implements GenreDtoService {
     public void add(String name) {
         repo.save(GenreDto.createEntity(new GenreDto(0, name)));
     }
-
-    @Override
-    public GenreDto getByGenre(String genre) {
-        return GenreDto.createDto(repo.findByGenreIgnoreCase(genre));
-    }
 }
