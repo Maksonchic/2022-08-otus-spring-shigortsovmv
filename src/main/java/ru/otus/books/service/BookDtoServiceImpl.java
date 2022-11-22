@@ -36,7 +36,7 @@ public class BookDtoServiceImpl implements BookDtoService {
     @Override
     @Transactional(readOnly = true)
     public BookDto getById(long id) {
-        return BookDto.createDto(repo.findById(id), true);
+        return BookDto.createDto(repo.findById(id).orElseThrow(), true);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class BookDtoServiceImpl implements BookDtoService {
     @Override
     @Transactional
     public void removeBookById(long id) {
-        Book book = repo.findById(id);
+        Book book = repo.findById(id).orElseThrow();
         updateAuthorRemoveBook(book);
         removeCommentsByBook(book);
         repo.delete(book);
@@ -96,7 +96,7 @@ public class BookDtoServiceImpl implements BookDtoService {
     }
 
     private Book insertCommentInBooks(long bookId, Comment comment) {
-        Book book = repo.findById(bookId);
+        Book book = repo.findById(bookId).orElseThrow();
         book.getComments().add(comment.getId());
         return repo.save(book);
     }
@@ -115,7 +115,7 @@ public class BookDtoServiceImpl implements BookDtoService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentDto> getBookComments(long bookId) {
-        Book book = repo.findById(bookId);
+        Book book = repo.findById(bookId).orElseThrow();
         List<Comment> comments = commentRepo.findByIdIn(book.getComments());
         return CommentDto.createDto(comments);
     }
