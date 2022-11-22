@@ -6,9 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.dto.AuthorDto;
 import ru.otus.books.dto.BookDto;
 import ru.otus.books.models.Author;
+import ru.otus.books.models.Book;
 import ru.otus.books.repositories.AuthorRepository;
 import ru.otus.books.repositories.BookRepository;
+import ru.otus.books.repositories.CommentRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,6 +23,9 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
+
     @Override
     public List<AuthorDto> getAllAuthors() {
         return repo.findAll().stream().map(AuthorDto::createDto).toList();
@@ -29,7 +35,9 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     @Transactional(readOnly = true)
     public List<BookDto> getAuthorBooks(String authorNickName) {
         Author author = repo.findByNickNameIgnoreCase(authorNickName);
-        return author.getBooks().stream().map(b -> BookDto.createDto(b, true)).toList();
+        List<Book> books = new ArrayList<>();
+        bookRepository.findAllById(author.getBooks()).forEach(books::add);
+        return books.stream().map(b -> BookDto.createDto(b, true)).toList();
     }
 
     @Override
@@ -41,7 +49,10 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     @Transactional
     public void removeByNickName(String nickName) {
         Author author = repo.findByNickNameIgnoreCase(nickName);
-        bookRepository.deleteAll(author.getBooks());
+        List<Long> comms = new ArrayList<>();
+        bookRepository.findAllById(author.getBooks()).forEach(b -> comms.addAll(b.getComments()));
         repo.delete(author);
+        bookRepository.deleteAllById(author.getBooks());
+        commentRepository.deleteAllById(comms);
     }
 }

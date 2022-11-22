@@ -2,11 +2,9 @@ package ru.otus.books.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.dto.GenreDto;
 import ru.otus.books.repositories.GenreRepository;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 @Service

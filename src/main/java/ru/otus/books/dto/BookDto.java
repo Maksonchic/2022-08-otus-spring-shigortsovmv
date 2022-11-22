@@ -11,11 +11,11 @@ public class BookDto {
     private final long id;
     private final String title;
     private final int pageCount;
-    private final AuthorDto author;
+    private final Long author;
     private final GenreDto genre;
     private final List<Long> comments;
 
-    public BookDto(long id, String title, int pageCount, AuthorDto author, GenreDto genre, List<Long> comments) {
+    public BookDto(long id, String title, int pageCount, Long author, GenreDto genre, List<Long> comments) {
         this.id = id;
         this.title = title;
         this.pageCount = pageCount;
@@ -32,13 +32,12 @@ public class BookDto {
         if (!isAuthorContains) {
             book.setAuthor(null);
         }
-        AuthorDto authorDto = AuthorDto.createDto(book.getAuthor());
         GenreDto genreDto = GenreDto.createDto(book.getGenre());
         return new BookDto(
                 book.getId(),
                 book.getTitle(),
                 book.getPageCount(),
-                authorDto,
+                book.getAuthor(),
                 genreDto,
                 book.getComments());
     }
@@ -48,7 +47,7 @@ public class BookDto {
                 bookDto.getId(),
                 bookDto.getTitle(),
                 bookDto.getPageCount(),
-                AuthorDto.createEntity(bookDto.getAuthor()),
+                bookDto.getAuthor(),
                 GenreDto.createEntity(bookDto.getGenre()),
                 bookDto.getComments());
     }
@@ -65,7 +64,7 @@ public class BookDto {
         return pageCount;
     }
 
-    public AuthorDto getAuthor() {
+    public Long getAuthor() {
         return author;
     }
 

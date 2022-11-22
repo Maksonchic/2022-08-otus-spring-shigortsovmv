@@ -23,7 +23,7 @@ public class Author {
     private String lastName;
     private String firstName;
     private String middleName;
-    private List<Book> books;
+    private List<Long> books;
 
     public Author(long id, String nickName, String lastName, String firstName, String middleName) {
         this.id = id;
@@ -74,11 +74,11 @@ public class Author {
         this.middleName = middleName;
     }
 
-    public List<Book> getBooks() {
+    public List<Long> getBooks() {
         return books;
     }
 
-    public void setBooks(List<Book> books) {
+    public void setBooks(List<Long> books) {
         this.books = books;
     }
 
@@ -90,7 +90,7 @@ public class Author {
                 ", lastName='" + lastName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
-                ", books=" + (books == null ? "[]" : books.stream().map(Book::toString).toList()) +
+                ", books=" + books +
                 '}';
     }
 }

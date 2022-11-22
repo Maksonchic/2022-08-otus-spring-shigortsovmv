@@ -3,10 +3,8 @@ package ru.otus.books.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.books.dto.AuthorDto;
 import ru.otus.books.dto.BookDto;
 import ru.otus.books.dto.CommentDto;
-import ru.otus.books.dto.GenreDto;
 import ru.otus.books.models.Author;
 import ru.otus.books.models.Book;
 import ru.otus.books.models.Comment;
@@ -42,24 +40,24 @@ public class BookDtoServiceImpl implements BookDtoService {
     @Override
     @Transactional
     public BookDto add(String title, int page_count, String authorNickName, String genre) {
-        BookDto bookDto = new BookDto(
+        Author author = authorRepo.findByNickNameIgnoreCase(authorNickName);
+        Book book = new Book(
                 0,
                 title,
                 page_count,
-                AuthorDto.createDto(authorRepo.findByNickNameIgnoreCase(authorNickName)),
-                GenreDto.createDto(genreRepo.findByGenreIgnoreCase(genre)),
+                author.getId(),
+                genreRepo.findByGenreIgnoreCase(genre),
                 new ArrayList<>());
 
-        Book entity = BookDto.createEntity(bookDto);
-        entity.getAuthor().setBooks(null);
-        repo.save(entity);
+        saveBoth(author, book);
 
-        Author author = authorRepo.findByNickNameIgnoreCase(authorNickName);
-        entity.setAuthor(null);
-        author.getBooks().add(entity);
+        return BookDto.createDto(book);
+    }
+
+    private void saveBoth(Author author, Book book) {
+        book = repo.save(book);
+        author.getBooks().add(book.getId());
         authorRepo.save(author);
-
-        return bookDto;
     }
 
     @Override
@@ -76,8 +74,8 @@ public class BookDtoServiceImpl implements BookDtoService {
     }
 
     private void updateAuthorRemoveBook(Book book) {
-        Author author = authorRepo.findByNickNameIgnoreCase(book.getAuthor().getNickName());
-        author.getBooks().removeIf(b -> b.getId() == book.getId());
+        Author author = authorRepo.findById(book.getAuthor()).orElseThrow();
+        author.getBooks().removeIf(b -> b.equals(book.getId()));
         authorRepo.save(author);
     }
 
@@ -85,8 +83,7 @@ public class BookDtoServiceImpl implements BookDtoService {
     @Transactional
     public void addBookComment(long bookId, String commentText) {
         Comment comment = insertComment(commentText);
-        Book book = insertCommentInBooks(bookId, comment);
-        updateAuthor(book);
+        insertCommentInBooks(bookId, comment);
     }
 
     private Comment insertComment(String commentText) {
@@ -95,21 +92,10 @@ public class BookDtoServiceImpl implements BookDtoService {
         return comment;
     }
 
-    private Book insertCommentInBooks(long bookId, Comment comment) {
+    private void insertCommentInBooks(long bookId, Comment comment) {
         Book book = repo.findById(bookId).orElseThrow();
         book.getComments().add(comment.getId());
-        return repo.save(book);
-    }
-
-    private void updateAuthor(Book book) {
-        Author author = authorRepo.findByNickNameIgnoreCase(book.getAuthor().getNickName());
-        for (Book b : author.getBooks()) {
-            if (b.getId() == book.getId()) {
-                b.setComments(book.getComments());
-                break;
-            }
-        }
-        authorRepo.save(author);
+        repo.save(book);
     }
 
     @Override

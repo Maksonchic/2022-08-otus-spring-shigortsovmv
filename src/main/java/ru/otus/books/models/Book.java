@@ -20,7 +20,7 @@ public class Book {
     private long id;
     private String title;
     private int pageCount;
-    private Author author;
+    private Long author;
     private Genre genre;
     private List<Long> comments;
 
@@ -48,11 +48,11 @@ public class Book {
         this.pageCount = pageCount;
     }
 
-    public Author getAuthor() {
+    public Long getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthor(Long author) {
         this.author = author;
     }
 
@@ -78,7 +78,7 @@ public class Book {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", pageCount=" + pageCount +
-                ", author=" + (author == null ? "" : author.getNickName()) +
+                ", author=" + author +
                 ", genre=" + genre.getGenre() +
                 ", comments=" + comments +
                 '}';

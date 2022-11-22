@@ -4,7 +4,8 @@ spring:
       authentication-database: admin
 #      username: myUserAdmin
 #      password: abc123
-      database: test
+      database: boklib
       port: 27017
-      host: 176.57.220.30
+#      host: 176.57.220.30
+      host: localhost
 

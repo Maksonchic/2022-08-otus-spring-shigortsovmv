@@ -14,9 +14,9 @@ public class AuthorDto {
     private final String lastName;
     private final String firstName;
     private final String middleName;
-    private final List<BookDto> books;
+    private final List<Long> books;
 
-    public AuthorDto(long id, String nickName, String lastName, String firstName, String middleName, List<BookDto> books) {
+    public AuthorDto(long id, String nickName, String lastName, String firstName, String middleName, List<Long> books) {
         this.id = id;
         this.nickName = nickName;
         this.lastName = lastName;
@@ -43,7 +43,7 @@ public class AuthorDto {
                 author.getLastName(),
                 author.getFirstName(),
                 author.getMiddleName(),
-                author.getBooks().stream().map(b -> BookDto.createDto(b, false)).toList());
+                author.getBooks());
     }
 
     public static Author createEntity(AuthorDto authorDto) {
@@ -53,7 +53,7 @@ public class AuthorDto {
                 authorDto.getLastName(),
                 authorDto.getFirstName(),
                 authorDto.getMiddleName(),
-                authorDto.getBooks().stream().map(BookDto::createEntity).toList());
+                authorDto.getBooks());
     }
 
     public long getId() {
@@ -76,7 +76,7 @@ public class AuthorDto {
         return middleName;
     }
 
-    public List<BookDto> getBooks() {
+    public List<Long> getBooks() {
         return books;
     }
 
