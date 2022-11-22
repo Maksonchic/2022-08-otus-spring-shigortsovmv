@@ -54,12 +54,6 @@ public class BookDtoServiceImpl implements BookDtoService {
         return BookDto.createDto(book);
     }
 
-    private void saveBoth(Author author, Book book) {
-        book = repo.save(book);
-        author.getBooks().add(book.getId());
-        authorRepo.save(author);
-    }
-
     @Override
     @Transactional
     public void removeBookById(long id) {
@@ -67,6 +61,27 @@ public class BookDtoServiceImpl implements BookDtoService {
         updateAuthorRemoveBook(book);
         removeCommentsByBook(book);
         repo.delete(book);
+    }
+
+    @Override
+    @Transactional
+    public void addBookComment(long bookId, String commentText) {
+        Comment comment = insertComment(commentText);
+        insertCommentInBooks(bookId, comment);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommentDto> getBookComments(long bookId) {
+        Book book = repo.findById(bookId).orElseThrow();
+        List<Comment> comments = commentRepo.findByIdIn(book.getComments());
+        return CommentDto.createDto(comments);
+    }
+
+    private void saveBoth(Author author, Book book) {
+        book = repo.save(book);
+        author.getBooks().add(book.getId());
+        authorRepo.save(author);
     }
 
     private void removeCommentsByBook(Book book) {
@@ -79,13 +94,6 @@ public class BookDtoServiceImpl implements BookDtoService {
         authorRepo.save(author);
     }
 
-    @Override
-    @Transactional
-    public void addBookComment(long bookId, String commentText) {
-        Comment comment = insertComment(commentText);
-        insertCommentInBooks(bookId, comment);
-    }
-
     private Comment insertComment(String commentText) {
         Comment comment = new Comment(0, commentText);
         comment = commentRepo.save(comment);
@@ -96,13 +104,5 @@ public class BookDtoServiceImpl implements BookDtoService {
         Book book = repo.findById(bookId).orElseThrow();
         book.getComments().add(comment.getId());
         repo.save(book);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> getBookComments(long bookId) {
-        Book book = repo.findById(bookId).orElseThrow();
-        List<Comment> comments = commentRepo.findByIdIn(book.getComments());
-        return CommentDto.createDto(comments);
     }
 }
