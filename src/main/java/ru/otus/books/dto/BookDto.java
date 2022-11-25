@@ -2,6 +2,7 @@ package ru.otus.books.dto;
 
 import lombok.EqualsAndHashCode;
 import ru.otus.books.models.Book;
+import ru.otus.books.models.Comment;
 
 import java.util.List;
 
@@ -13,9 +14,9 @@ public class BookDto {
     private final int pageCount;
     private final Long author;
     private final GenreDto genre;
-    private final List<Long> comments;
+    private final List<CommentDto> comments;
 
-    public BookDto(long id, String title, int pageCount, Long author, GenreDto genre, List<Long> comments) {
+    public BookDto(long id, String title, int pageCount, Long author, GenreDto genre, List<CommentDto> comments) {
         this.id = id;
         this.title = title;
         this.pageCount = pageCount;
@@ -39,7 +40,7 @@ public class BookDto {
                 book.getPageCount(),
                 book.getAuthor(),
                 genreDto,
-                book.getComments());
+                book.getComments().stream().map(CommentDto::createDto).toList());
     }
 
     public static Book createEntity(final BookDto bookDto) {
@@ -49,7 +50,7 @@ public class BookDto {
                 bookDto.getPageCount(),
                 bookDto.getAuthor(),
                 GenreDto.createEntity(bookDto.getGenre()),
-                bookDto.getComments());
+                bookDto.getComments().stream().map(CommentDto::createEntity).toList());
     }
 
     public long getId() {
@@ -72,7 +73,7 @@ public class BookDto {
         return genre;
     }
 
-    public List<Long> getComments() {
+    public List<CommentDto> getComments() {
         return comments;
     }
 

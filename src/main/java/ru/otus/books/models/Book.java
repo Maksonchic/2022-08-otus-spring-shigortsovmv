@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -21,8 +22,10 @@ public class Book {
     private String title;
     private int pageCount;
     private Long author;
+    @DBRef
     private Genre genre;
-    private List<Long> comments;
+    @DBRef
+    private List<Comment> comments;
 
     public long getId() {
         return id;
@@ -64,11 +67,11 @@ public class Book {
         this.genre = genre;
     }
 
-    public List<Long> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Long> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 

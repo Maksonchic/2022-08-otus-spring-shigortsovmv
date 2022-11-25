@@ -74,18 +74,18 @@ public class BookDtoServiceImpl implements BookDtoService {
     @Transactional(readOnly = true)
     public List<CommentDto> getBookComments(long bookId) {
         Book book = repo.findById(bookId).orElseThrow();
-        List<Comment> comments = commentRepo.findByIdIn(book.getComments());
+        List<Comment> comments = book.getComments();
         return CommentDto.createDto(comments);
     }
 
     private void saveBoth(Author author, Book book) {
         book = repo.save(book);
-        author.getBooks().add(book.getId());
+        author.getBooks().add(book);
         authorRepo.save(author);
     }
 
     private void removeCommentsByBook(Book book) {
-        commentRepo.deleteAllById(book.getComments());
+        commentRepo.deleteAll(book.getComments());
     }
 
     private void updateAuthorRemoveBook(Book book) {
@@ -102,7 +102,7 @@ public class BookDtoServiceImpl implements BookDtoService {
 
     private void insertCommentInBooks(long bookId, Comment comment) {
         Book book = repo.findById(bookId).orElseThrow();
-        book.getComments().add(comment.getId());
+        book.getComments().add(comment);
         repo.save(book);
     }
 }

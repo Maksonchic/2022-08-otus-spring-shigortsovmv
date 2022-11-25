@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ public class Author {
     private String lastName;
     private String firstName;
     private String middleName;
-    private List<Long> books;
+    @DBRef
+    private List<Book> books;
 
     public Author(long id, String nickName, String lastName, String firstName, String middleName) {
         this.id = id;
@@ -74,11 +76,11 @@ public class Author {
         this.middleName = middleName;
     }
 
-    public List<Long> getBooks() {
+    public List<Book> getBooks() {
         return books;
     }
 
-    public void setBooks(List<Long> books) {
+    public void setBooks(List<Book> books) {
         this.books = books;
     }
 

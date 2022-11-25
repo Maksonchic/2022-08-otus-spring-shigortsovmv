@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.dto.AuthorDto;
 import ru.otus.books.dto.BookDto;
 import ru.otus.books.models.Author;
-import ru.otus.books.models.Book;
+import ru.otus.books.models.Comment;
 import ru.otus.books.repositories.AuthorRepository;
 import ru.otus.books.repositories.BookRepository;
 import ru.otus.books.repositories.CommentRepository;
@@ -35,9 +35,7 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     @Transactional(readOnly = true)
     public List<BookDto> getAuthorBooks(String authorNickName) {
         Author author = repo.findByNickNameIgnoreCase(authorNickName);
-        List<Book> books = new ArrayList<>();
-        bookRepository.findAllById(author.getBooks()).forEach(books::add);
-        return books.stream().map(b -> BookDto.createDto(b, true)).toList();
+        return author.getBooks().stream().map(b -> BookDto.createDto(b, true)).toList();
     }
 
     @Override
@@ -49,10 +47,10 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
     @Transactional
     public void removeByNickName(String nickName) {
         Author author = repo.findByNickNameIgnoreCase(nickName);
-        List<Long> comms = new ArrayList<>();
-        bookRepository.findAllById(author.getBooks()).forEach(b -> comms.addAll(b.getComments()));
+        List<Comment> comms = new ArrayList<>();
+        author.getBooks().forEach(b -> comms.addAll(b.getComments()));
         repo.delete(author);
-        bookRepository.deleteAllById(author.getBooks());
-        commentRepository.deleteAllById(comms);
+        bookRepository.deleteAll(author.getBooks());
+        commentRepository.deleteAll(comms);
     }
 }
