@@ -14,9 +14,9 @@ public class BookDto {
     private final int pageCount;
     private final Long author;
     private final GenreDto genre;
-    private final List<CommentDto> comments;
+    private final List<Comment> comments;
 
-    public BookDto(long id, String title, int pageCount, Long author, GenreDto genre, List<CommentDto> comments) {
+    public BookDto(long id, String title, int pageCount, Long author, GenreDto genre, List<Comment> comments) {
         this.id = id;
         this.title = title;
         this.pageCount = pageCount;
@@ -40,7 +40,7 @@ public class BookDto {
                 book.getPageCount(),
                 book.getAuthor(),
                 genreDto,
-                book.getComments().stream().map(CommentDto::createDto).toList());
+                book.getComments());
     }
 
     public static Book createEntity(final BookDto bookDto) {
@@ -50,7 +50,7 @@ public class BookDto {
                 bookDto.getPageCount(),
                 bookDto.getAuthor(),
                 GenreDto.createEntity(bookDto.getGenre()),
-                bookDto.getComments().stream().map(CommentDto::createEntity).toList());
+                bookDto.getComments());
     }
 
     public long getId() {
@@ -73,7 +73,7 @@ public class BookDto {
         return genre;
     }
 
-    public List<CommentDto> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 

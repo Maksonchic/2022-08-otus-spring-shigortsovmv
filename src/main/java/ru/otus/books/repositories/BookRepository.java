@@ -6,5 +6,5 @@ import ru.otus.books.models.Book;
 import java.util.List;
 
 public interface BookRepository extends MongoRepository<Book, Long> {
-    Book findByComments(final long commentId);
+    Book findByCommentsId(String commentId);
 }

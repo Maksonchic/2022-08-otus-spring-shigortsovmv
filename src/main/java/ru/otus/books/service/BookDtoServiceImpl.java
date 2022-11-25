@@ -4,17 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.books.dto.BookDto;
-import ru.otus.books.dto.CommentDto;
 import ru.otus.books.models.Author;
 import ru.otus.books.models.Book;
 import ru.otus.books.models.Comment;
 import ru.otus.books.repositories.AuthorRepository;
 import ru.otus.books.repositories.BookRepository;
-import ru.otus.books.repositories.CommentRepository;
 import ru.otus.books.repositories.GenreRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BookDtoServiceImpl implements BookDtoService {
@@ -27,9 +26,6 @@ public class BookDtoServiceImpl implements BookDtoService {
 
     @Autowired
     GenreRepository genreRepo;
-
-    @Autowired
-    CommentRepository commentRepo;
 
     @Override
     @Transactional(readOnly = true)
@@ -59,23 +55,38 @@ public class BookDtoServiceImpl implements BookDtoService {
     public void removeBookById(long id) {
         Book book = repo.findById(id).orElseThrow();
         updateAuthorRemoveBook(book);
-        removeCommentsByBook(book);
+        removeCommentsFromBook(book);
         repo.delete(book);
     }
 
     @Override
     @Transactional
     public void addBookComment(long bookId, String commentText) {
-        Comment comment = insertComment(commentText);
-        insertCommentInBooks(bookId, comment);
+        Comment comment = new Comment(UUID.randomUUID().toString(), commentText);
+        Book book = repo.findById(bookId).orElseThrow();
+        book.getComments().add(comment);
+        repo.save(book);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> getBookComments(long bookId) {
+    public List<Comment> getBookComments(long bookId) {
         Book book = repo.findById(bookId).orElseThrow();
-        List<Comment> comments = book.getComments();
-        return CommentDto.createDto(comments);
+        return book.getComments();
+    }
+
+    @Override
+    public void removeComment(String commentId) {
+        Book book = repo.findByCommentsId(commentId);
+        book.getComments().removeIf(c -> c.getId().equals(commentId));
+        repo.save(book);
+    }
+
+    @Override
+    public void editComment(String commentId, String newCommentText) {
+        Book book = repo.findByCommentsId(commentId);
+        Comment comment = book.getComments().stream().filter(c -> c.getId().equals(commentId)).findFirst().orElseThrow();
+        comment.setMessage(newCommentText);
+        repo.save(book);
     }
 
     private void saveBoth(Author author, Book book) {
@@ -84,25 +95,14 @@ public class BookDtoServiceImpl implements BookDtoService {
         authorRepo.save(author);
     }
 
-    private void removeCommentsByBook(Book book) {
-        commentRepo.deleteAll(book.getComments());
+    private void removeCommentsFromBook(Book book) {
+        book.setComments(new ArrayList<>());
+        repo.save(book);
     }
 
     private void updateAuthorRemoveBook(Book book) {
         Author author = authorRepo.findById(book.getAuthor()).orElseThrow();
         author.getBooks().removeIf(b -> b.equals(book.getId()));
         authorRepo.save(author);
-    }
-
-    private Comment insertComment(String commentText) {
-        Comment comment = new Comment(0, commentText);
-        comment = commentRepo.save(comment);
-        return comment;
-    }
-
-    private void insertCommentInBooks(long bookId, Comment comment) {
-        Book book = repo.findById(bookId).orElseThrow();
-        book.getComments().add(comment);
-        repo.save(book);
     }
 }

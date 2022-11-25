@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import ru.otus.books.dto.CommentDto;
 import ru.otus.books.models.Book;
 import ru.otus.books.models.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,7 +37,8 @@ class TestBookService {
 	public void checkInsert() {
 		insertBookViaMongoTemplate();
 		bookService.add("New one", 123, "me", "comedy");
-		assertEquals(mongoTemplate.findAll(Book.class).size(), 2);
+		List<Book> all = mongoTemplate.findAll(Book.class);
+		assertEquals(all.size(), 2);
 	}
 
 	@Test
@@ -46,13 +47,11 @@ class TestBookService {
 	public void addComment() {
 		insertBookViaMongoTemplate();
 		String commentText = "some comment new";
-		CommentDto newComment = new CommentDto(0, commentText);
-		List<CommentDto> bookComments = bookService.getBookComments(2);
+		Comment newComment = new Comment("0", commentText);
+		List<Comment> bookComments = bookService.getBookComments(2);
 		bookComments = List.of(bookComments.get(0), bookComments.get(1), newComment);
 		bookService.addBookComment(2, newComment.getMessage());
-		assertEquals(
-				CommentDto.createDto(mongoTemplate.findAll(Comment.class)),
-				bookComments);
+		assertEquals(Objects.requireNonNull(mongoTemplate.findById(2, Book.class)).getComments().size(), bookComments.size());
 	}
 
 	@Test
@@ -60,10 +59,8 @@ class TestBookService {
 	@DisplayName("Получение комментов")
 	public void getComments() {
 		insertBookViaMongoTemplate();
-		List<CommentDto> bookComments = bookService.getBookComments(2);
-		assertEquals(
-				CommentDto.createDto(mongoTemplate.findAll(Comment.class)),
-				bookComments);
+		List<Comment> bookComments = bookService.getBookComments(2);
+		assertEquals(Objects.requireNonNull(mongoTemplate.findById(2, Book.class)).getComments(), bookComments);
 	}
 
 	private void insertBookViaMongoTemplate() {
@@ -71,35 +68,25 @@ class TestBookService {
 		DBObject genre = BasicDBObjectBuilder.start().add("_id", 1).add("genre", "Comedy").get();
 		mongoTemplate.save(genre, "GENRES");
 		// add comments
-		DBObject comment1 = BasicDBObjectBuilder.start().add("_id", 1).add("message", "comment 1").get();
-		DBObject comment2 = BasicDBObjectBuilder.start().add("_id", 2).add("message", "comment 2").get();
-		mongoTemplate.save(comment1, "COMMENTS");
-		mongoTemplate.save(comment2, "COMMENTS");
+		DBObject comment1 = BasicDBObjectBuilder.start().add("_id", "1").add("message", "comment 1").get();
+		DBObject comment2 = BasicDBObjectBuilder.start().add("_id", "2").add("message", "comment 2").get();
 		// create book without author
-		BasicDBObjectBuilder bookWAB = BasicDBObjectBuilder.start()
+		DBObject book = BasicDBObjectBuilder.start()
 				.add("_id", 2)
 				.add("title", "some title")
+				.add("author", 1)
 				.add("genre", genre)
 				.add("comments", new ArrayList<>() {{
-					add(1);
-					add(2);
-				}});
+					add(comment1);
+					add(comment2);
+				}}).get();
 		// add author
 		DBObject author = BasicDBObjectBuilder.start()
 				.add("_id", 1)
 				.add("nickName", "me")
-				.add("books", new ArrayList<>(){{ add(bookWAB.get()); }})
+				.add("books", new ArrayList<>(){{ add(book); }})
 				.get();
 		mongoTemplate.save(author, "AUTHORS");
-		// add book
-		DBObject book = BasicDBObjectBuilder.start()
-				.add("_id", 2)
-				.add("title", "some title")
-				.add("genre", genre)
-				.add("comments", new ArrayList<>() {{
-					add(1);
-					add(2);
-				}}).add("author", author).get();
 		mongoTemplate.save(book, "BOOKS");
 	}
 }

@@ -24,7 +24,6 @@ public class Book {
     private Long author;
     @DBRef
     private Genre genre;
-    @DBRef
     private List<Comment> comments;
 
     public long getId() {

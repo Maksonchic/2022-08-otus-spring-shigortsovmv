@@ -9,7 +9,6 @@ import ru.otus.books.models.Author;
 import ru.otus.books.models.Comment;
 import ru.otus.books.repositories.AuthorRepository;
 import ru.otus.books.repositories.BookRepository;
-import ru.otus.books.repositories.CommentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +21,6 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
 
     @Autowired
     private BookRepository bookRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
 
     @Override
     public List<AuthorDto> getAllAuthors() {
@@ -51,6 +47,5 @@ public class AuthorDtoServiceImpl implements AuthorDtoService {
         author.getBooks().forEach(b -> comms.addAll(b.getComments()));
         repo.delete(author);
         bookRepository.deleteAll(author.getBooks());
-        commentRepository.deleteAll(comms);
     }
 }

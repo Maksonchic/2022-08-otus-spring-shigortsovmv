@@ -5,7 +5,6 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import ru.otus.books.service.AuthorDtoService;
 import ru.otus.books.service.BookDtoService;
-import ru.otus.books.service.CommentDtoService;
 import ru.otus.books.service.GenreDtoService;
 
 import java.util.stream.Collectors;
@@ -21,9 +20,6 @@ public class ShellController {
 
     @Autowired
     GenreDtoService genreService;
-
-    @Autowired
-    CommentDtoService commentService;
 
     // get book -id 1
     @ShellMethod(key = "get book -id", group = "books", value = ":id")
@@ -100,13 +96,13 @@ public class ShellController {
     }
 
     @ShellMethod(key = "edit comment", group = "comments", value = ":id :newText")
-    public void updateComment(long commentId, String newCommentText) {
-        commentService.edit(commentId, newCommentText);
+    public void updateComment(String commentId, String newCommentText) {
+        bookService.editComment(commentId, newCommentText);
     }
 
     @ShellMethod(key = "delete comment", group = "comments", value = ":id")
-    public void removeComment(long commentId) {
-        commentService.removeComment(commentId);
+    public void removeComment(String commentId) {
+        bookService.removeComment(commentId);
     }
 
     @ShellMethod(key = "get genres", group = "genres")
