@@ -2,6 +2,7 @@ package ru.otus.books.dto;
 
 import lombok.EqualsAndHashCode;
 import ru.otus.books.models.Author;
+import ru.otus.books.models.Book;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,13 @@ public class AuthorDto {
     private final String middleName;
     private final List<BookDto> books;
 
-    public AuthorDto(long id, String nickName, String lastName, String firstName, String middleName, List<BookDto> books) {
+    public AuthorDto(long id, String nickName, String lastName, String firstName, String middleName, List<Book> books) {
         this.id = id;
         this.nickName = nickName;
         this.lastName = lastName;
         this.firstName = firstName;
         this.middleName = middleName;
-        this.books = books;
+        this.books = books.stream().map(BookDto::createDto).toList();
     }
 
     // return author without books
@@ -43,7 +44,7 @@ public class AuthorDto {
                 author.getLastName(),
                 author.getFirstName(),
                 author.getMiddleName(),
-                author.getBooks().stream().map(b -> BookDto.createDto(b, false)).toList());
+                author.getBooks());
     }
 
     public static Author createEntity(AuthorDto authorDto) {

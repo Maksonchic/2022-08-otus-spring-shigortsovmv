@@ -2,48 +2,28 @@ package ru.otus.books.models;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "BOOKS")
-@Entity
+@Document(collection = "BOOKS")
 public class Book {
+
+    @Transient
+    public static final String SEQUENCE_NAME = "books_sequence";
+
     @Id
-    @Column(name = "book_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "title", nullable = false)
     private String title;
-
-    @Column(name = "page_count", nullable = false)
     private int pageCount;
-
-    @ManyToOne(targetEntity = Author.class, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "author_id")
-    private Author author;
-
-    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "genre_id")
+    private Long author;
+    @DBRef
     private Genre genre;
-
-    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "book_id")
-    @Fetch(FetchMode.SUBSELECT)
     private List<Comment> comments;
 
     public long getId() {
@@ -70,11 +50,11 @@ public class Book {
         this.pageCount = pageCount;
     }
 
-    public Author getAuthor() {
+    public Long getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthor(Long author) {
         this.author = author;
     }
 
@@ -100,7 +80,7 @@ public class Book {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", pageCount=" + pageCount +
-                ", author=" + author.getNickName() +
+                ", author=" + author +
                 ", genre=" + genre.getGenre() +
                 ", comments=" + comments +
                 '}';

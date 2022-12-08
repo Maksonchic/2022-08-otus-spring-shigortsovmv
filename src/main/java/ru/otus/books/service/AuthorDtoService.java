@@ -2,6 +2,7 @@ package ru.otus.books.service;
 
 import ru.otus.books.dto.AuthorDto;
 import ru.otus.books.dto.BookDto;
+import ru.otus.books.models.Book;
 
 import java.util.List;
 

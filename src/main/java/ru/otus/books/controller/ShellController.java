@@ -5,7 +5,6 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import ru.otus.books.service.AuthorDtoService;
 import ru.otus.books.service.BookDtoService;
-import ru.otus.books.service.CommentDtoService;
 import ru.otus.books.service.GenreDtoService;
 
 import java.util.stream.Collectors;
@@ -21,9 +20,6 @@ public class ShellController {
 
     @Autowired
     GenreDtoService genreService;
-
-    @Autowired
-    CommentDtoService commentService;
 
     // get book -id 1
     @ShellMethod(key = "get book -id", group = "books", value = ":id")
@@ -45,10 +41,12 @@ public class ShellController {
     }
 
     // add author me l f m
-    // add book qweeee 323 Michael Horror
     // add book qweeee 323 me Horror
-    // get book -author Michael
+    // add comment 2 "asdasd as dasd asss"
+    // get book -author me
+    // delete book 1
     // add book qweeee 323 Michael Horror
+    // add genre Horror
     @ShellMethod(key = "add book", group = "books", value = ":title :page_count :nickName_author :genre_name")
     public void addBook(String title, int page_count, String authorNickName, String genre) {
         bookService.add(title, page_count, authorNickName, genre);
@@ -64,7 +62,7 @@ public class ShellController {
     public String getAuthors() {
         return "[\r\n" +
                 authorService.getAllAuthors().stream()
-                        .map(a -> a.toString())
+                        .map(a -> a.toString()+"\r\n")
                         .collect(Collectors.joining(",")) +
                 "]";
     }
@@ -98,13 +96,13 @@ public class ShellController {
     }
 
     @ShellMethod(key = "edit comment", group = "comments", value = ":id :newText")
-    public void updateComment(long commentId, String newCommentText) {
-        commentService.edit(commentId, newCommentText);
+    public void updateComment(String commentId, String newCommentText) {
+        bookService.editComment(commentId, newCommentText);
     }
 
     @ShellMethod(key = "delete comment", group = "comments", value = ":id")
-    public void removeComment(long commentId) {
-        commentService.removeComment(commentId);
+    public void removeComment(String commentId) {
+        bookService.removeComment(commentId);
     }
 
     @ShellMethod(key = "get genres", group = "genres")
@@ -119,10 +117,5 @@ public class ShellController {
     @ShellMethod(key = "add genre", group = "genres", value = ":genre")
     public void addGenre(String name) {
         genreService.add(name);
-    }
-
-    @ShellMethod(key = "delete genre", group = "genres", value = ":genre")
-    public void removeGenreById(String genre) {
-        genreService.removeGenre(genre);
     }
 }

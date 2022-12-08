@@ -1,8 +1,10 @@
 package ru.otus.books.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import ru.otus.books.models.Book;
 
-public interface BookRepository extends JpaRepository<Book, Long> {
-    Book findById(final long bookId);
+import java.util.List;
+
+public interface BookRepository extends MongoRepository<Book, Long> {
+    Book findByCommentsId(String commentId);
 }

@@ -1,23 +1,11 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-  sql:
-    init:
-      mode: always
-      data-locations: data.sql
-      schema-locations: schema.sql
-  h2:
-    console:
-      path: /h2-console
-      settings:
-        web-allow-others: true
-  jpa:
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    properties:
-      hibernate:
-        # каждая выборка ленивой сущности откроет временный сеанс (для shell)
-#        enable_lazy_load_no_trans: true
+  data:
+    mongodb:
+      authentication-database: admin
+#      username: myUserAdmin
+#      password: abc123
+      database: boklib
+      port: 27017
+#      host: 176.57.220.30
+      host: localhost
 

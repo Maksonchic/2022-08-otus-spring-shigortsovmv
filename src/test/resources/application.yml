@@ -1,14 +1,7 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
   shell:
     interactive:
       enabled: false
-  sql:
-    init:
-      mode: always
-      data-locations: data.sql
-      schema-locations: schema.sql
   h2:
     console:
       path: /h2-console
@@ -16,8 +9,18 @@ spring:
         web-allow-others: true
   jpa:
     generate-ddl: false
-    hibernate:
-      ddl-auto: update
-
     show-sql: true
+
+  data:
+    mongodb:
+      authentication-database: admin
+      #      username: myUserAdmin
+      #      password: abc123
+#      database: test
+#      port: 27017
+#      host: 176.57.220.30
+#  mongodb:
+#    embedded:
+#      version: 3.5.2
+
 

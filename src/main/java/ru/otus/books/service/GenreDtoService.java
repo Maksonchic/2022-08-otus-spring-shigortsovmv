@@ -7,6 +7,4 @@ import java.util.List;
 public interface GenreDtoService {
     List<GenreDto> getAllGenres();
     void add(String name);
-    void removeGenre(String genre);
-    GenreDto getByGenre(String genre);
 }
